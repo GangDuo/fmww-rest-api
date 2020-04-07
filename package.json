@@ -7,10 +7,11 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "sync-glitch-cli": "^2.0.1"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:win": "call node_modules/.bin/sync-glitch.cmd"
   },
