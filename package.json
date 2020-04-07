@@ -1,0 +1,24 @@
+{
+  "name": "fmww-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GangDuo/fmww-rest-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GangDuo/fmww-rest-api/issues"
+  },
+  "homepage": "https://github.com/GangDuo/fmww-rest-api#readme"
+}
