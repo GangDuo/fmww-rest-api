@@ -1,0 +1,27 @@
+{
+  "name": "fmww-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "sync-glitch-cli": "^2.0.1"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:win": "call node_modules/.bin/sync-glitch.cmd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GangDuo/fmww-rest-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GangDuo/fmww-rest-api/issues"
+  },
+  "homepage": "https://github.com/GangDuo/fmww-rest-api#readme"
+}
