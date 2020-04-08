@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "fmww-library": "github:GangDuo/fmww-library-js",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
