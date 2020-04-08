@@ -1,3 +1,4 @@
+require('dotenv').config()
 const moment = require("moment");
 const {FmClient, InventoryAsBatch} = require('fmww-library');
 const express = require('express');
