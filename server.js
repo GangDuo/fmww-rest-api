@@ -84,7 +84,10 @@ app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
       jan: jan,
       qty: qty
     });
-  })().catch(next);
+  })().catch(_ => {
+    isBusy = false
+    next()
+  });
 });
 
 app.get('/jsonp/v1/inventories', (req, res, next) => {
