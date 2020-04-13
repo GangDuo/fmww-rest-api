@@ -92,5 +92,10 @@ app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
   })().catch(next);
 });
 
+app.get('/jsonp/v1/inventories', (req, res, next) => {
+  const {store, jan, qty, callback} = req.query
+  res.send(req.query);
+})
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
