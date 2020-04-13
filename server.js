@@ -1,11 +1,10 @@
-const moment = require("moment");
 const {FmClient, InventoryAsBatch} = require('fmww-library');
 const Inventory = require('./src/Inventory')
 const express = require('express');
 const app = express();
 const {promisify} = require('util');
 const fs = require('fs');
-const writeFileAsync = promisify(fs.writeFile);
+
 const unlinkAsync = promisify(fs.unlink);
 let isBusy = false
 
@@ -56,18 +55,8 @@ app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
     isBusy = true
 
     // 在庫更新の更新用CSVデータ生成
-    const now = moment()
-    const recode = [
-      `${store}${now.format("YYMMDD")}`,
-      jan,
-      Math.abs(qty),
-      now.format("YYYY-MM-DD"),
-      9900,
-      store,
-      qty < 0 ? 3 : 4
-    ]
     const filename = 'tmp.csv'
-    await writeFileAsync(filename, recode.join(','))
+    await inventory.generateDefaultFormatCSV(filename)
 
     // CSVアップロード
     const response = await c.create({

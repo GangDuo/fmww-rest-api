@@ -1,3 +1,8 @@
+const moment = require("moment");
+const {promisify} = require('util');
+const fs = require('fs');
+const writeFileAsync = promisify(fs.writeFile);
+
 module.exports = class Inventory {
   constructor(props) {
     Object.keys(props)
@@ -31,5 +36,20 @@ module.exports = class Inventory {
       return false
     }
     return true
+  }
+
+  async generateDefaultFormatCSV(filename) {
+    const {qty, store, jan} = this
+    const now = moment()
+    const record = [
+      `${store}${now.format("YYMMDD")}`,
+      jan,
+      Math.abs(qty),
+      now.format("YYYY-MM-DD"),
+      9900,
+      store,
+      qty < 0 ? 3 : 4
+    ]
+    await writeFileAsync(filename, record.join(','))
   }
 }
