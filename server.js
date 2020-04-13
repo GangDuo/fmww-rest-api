@@ -1,5 +1,6 @@
 const moment = require("moment");
 const {FmClient, InventoryAsBatch} = require('fmww-library');
+const Inventory = require('./src/Inventory')
 const express = require('express');
 const app = express();
 const {promisify} = require('util');
@@ -45,20 +46,14 @@ app.get('/', (req, res) => {
 });
 
 app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
+  if(isBusy) return res.status(503).send('Service Temporarily Unavailable')
+  const inventory = new Inventory(Object.assign({}, req.body, req.params))
+  if(!inventory.isValid()) return res.status(404).send(inventory.errors.message);
+
   (async () => {
-    if(isBusy) return res.status(503).send('Service Temporarily Unavailable')
+    const {qty, store, jan} = inventory
+
     isBusy = true
-    // パラメータチェック
-    const qty = parseInt(req.body.qty)
-    if (isNaN(qty)) {
-      return res.status(404).send('The given QTY was NaN.');
-    }
-
-    const store = req.params.store
-    if (!store || store.length < 3) return res.status(404).send('The given STORE was not found.');
-
-    const jan = req.params.jan
-    if (!jan) return res.status(404).send('The given JAN was not found.');
 
     // 在庫更新の更新用CSVデータ生成
     const now = moment()
