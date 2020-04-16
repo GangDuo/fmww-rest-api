@@ -1,10 +1,11 @@
-const moment = require("moment");
 const {FmClient, InventoryAsBatch} = require('fmww-library');
+const Inventory = require('./src/Inventory')
 const express = require('express');
 const app = express();
 const {promisify} = require('util');
 const fs = require('fs');
-const writeFileAsync = promisify(fs.writeFile);
+const axios = require('axios');
+
 const unlinkAsync = promisify(fs.unlink);
 let isBusy = false
 
@@ -45,34 +46,18 @@ app.get('/', (req, res) => {
 });
 
 app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
+  if(isBusy) return res.status(503).send('Service Temporarily Unavailable')
+  const inventory = new Inventory(Object.assign({}, req.body, req.params))
+  if(!inventory.isValid()) return res.status(404).send(inventory.errors.message);
+
   (async () => {
-    if(isBusy) return res.status(503).send('Service Temporarily Unavailable')
+    const {qty, store, jan} = inventory
+
     isBusy = true
-    // パラメータチェック
-    const qty = parseInt(req.body.qty)
-    if (isNaN(qty)) {
-      return res.status(404).send('The given QTY was NaN.');
-    }
-
-    const store = req.params.store
-    if (!store || store.length < 3) return res.status(404).send('The given STORE was not found.');
-
-    const jan = req.params.jan
-    if (!jan) return res.status(404).send('The given JAN was not found.');
 
     // 在庫更新の更新用CSVデータ生成
-    const now = moment()
-    const recode = [
-      `${store}${now.format("YYMMDD")}`,
-      jan,
-      Math.abs(qty),
-      now.format("YYYY-MM-DD"),
-      9900,
-      store,
-      qty < 0 ? 3 : 4
-    ]
     const filename = 'tmp.csv'
-    await writeFileAsync(filename, recode.join(','))
+    await inventory.generateDefaultFormatCSV(filename)
 
     // CSVアップロード
     const response = await c.create({
@@ -89,8 +74,30 @@ app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
       jan: jan,
       qty: qty
     });
-  })().catch(next);
+  })().catch(_ => {
+    isBusy = false
+    next()
+  });
 });
+
+app.get('/jsonp/v1/inventories', (req, res, next) => {
+  const {store, jan, qty} = req.query
+  const payload = JSON.stringify({
+    qty: qty
+  })
+  
+  axios.put(`http://localhost:3000/api/v1/inventories/${store}/${jan}`, payload, {
+    headers: {'content-type': 'application/json'},
+  })
+    .then(response => {
+      res.jsonp(response.data)
+    })
+    .catch(error => {
+      console.log(error);
+      res.jsonp({...req.query, ...error})
+    });
+  
+})
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
