@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const {promisify} = require('util');
 const fs = require('fs');
+const axios = require('axios');
 
 const unlinkAsync = promisify(fs.unlink);
 let isBusy = false
@@ -80,8 +81,22 @@ app.put('/api/v1/inventories/:store/:jan', (req, res, next) => {
 });
 
 app.get('/jsonp/v1/inventories', (req, res, next) => {
-  const {store, jan, qty, callback} = req.query
-  res.send(req.query);
+  const {store, jan, qty} = req.query
+  const payload = JSON.stringify({
+    qty: qty
+  })
+  
+  axios.put(`http://localhost:3000/api/v1/inventories/${store}/${jan}`, payload, {
+    headers: {'content-type': 'application/json'},
+  })
+    .then(response => {
+      res.jsonp(response.data)
+    })
+    .catch(error => {
+      console.log(error);
+      res.jsonp({...req.query, ...error})
+    });
+  
 })
 
 const port = process.env.PORT || 3000;
