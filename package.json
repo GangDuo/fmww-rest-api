@@ -14,13 +14,15 @@
     "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "nodemon": "^2.0.2",
-    "sync-glitch-cli": "^2.0.1"
+    "sync-glitch-cli": "^2.0.1",
+    "uglify-js": "^3.9.1"
   },
   "scripts": {
     "start": "node --require dotenv/config server.js",
     "dev": "nodemon --require dotenv/config server.js",
     "test": "mocha --recursive test",
-    "deploy:win": "call node_modules/.bin/sync-glitch.cmd"
+    "deploy:win": "call node_modules/.bin/sync-glitch.cmd",
+    "minify": "uglifyjs templates/stock-editor-pane-extension.js -o templates/stock-editor-pane-extension.min.js"
   },
   "repository": {
     "type": "git",
