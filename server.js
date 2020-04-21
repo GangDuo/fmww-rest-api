@@ -102,7 +102,7 @@ app.get('/jsonp/v1/inventories', (req, res, next) => {
 app.get('/static/js/stock-editor-pane-extension.js', (req, res, next) => {
   const {store} = req.query
 
-  fs.readFile("templates/stock-editor-pane-extension.js", 'utf-8', (err, data) => {
+  fs.readFile("templates/stock-editor-pane-extension.min.js", 'utf-8', (err, data) => {
     if (err) return res.status(503).send('Service Temporarily Unavailable')
     res.set('Content-Type', 'text/javascript')
     res.send(data.replace(/<%\s*VAR_STORE_CODE\s*%>/g, store).replace(/<%\s*VAR_HOST\s*%>/g, req.get('host')))
