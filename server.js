@@ -5,6 +5,7 @@ const app = express();
 const {promisify} = require('util');
 const fs = require('fs');
 const axios = require('axios');
+const os = require('os');
 
 const unlinkAsync = promisify(fs.unlink);
 let isBusy = false
@@ -97,6 +98,16 @@ app.get('/jsonp/v1/inventories', (req, res, next) => {
       res.jsonp({...req.query, ...error})
     });
   
+})
+
+app.get('/static/js/stock-editor-pane-extension.js', (req, res, next) => {
+  const {store} = req.query
+
+  fs.readFile("templates/stock-editor-pane-extension.js", 'utf-8', (err, data) => {
+    if (err) return res.status(503).send('Service Temporarily Unavailable')
+    res.set('Content-Type', 'text/javascript')
+    res.send(data.replace(/<%\s*VAR_STORE_CODE\s*%>/g, store).replace(/<%\s*VAR_HOST\s*%>/g, os.hostname()))
+  });
 })
 
 const port = process.env.PORT || 3000;
