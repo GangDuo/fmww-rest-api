@@ -41,13 +41,16 @@
     overlay.style.height = '100%';
     overlay.style.top = 0;
     overlay.style.left = 0;
-    if(userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
-      // Internet Explorer 8-9
-      overlay.style.backgroundColor = 'rgb(255, 255, 255)';
-      overlay.style.cssText += ';-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=80)"';
-    } else {
+    try {
       overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    } catch(err) {
+      if(userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
+        // Internet Explorer 8-9
+        overlay.style.backgroundColor = 'rgb(255, 255, 255)';
+        overlay.style.cssText += ';-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=80)"';
+      }  
     }
+
     document.body.style.position = 'relative';
     document.body.appendChild(overlay)
   };
