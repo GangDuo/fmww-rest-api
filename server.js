@@ -39,6 +39,7 @@ async function updateSession(client) {
         .createAbility(InventoryAsBatch)
 }
 
+app.use(express.static('public'));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -86,7 +87,7 @@ app.get('/jsonp/v1/inventories', (req, res, next) => {
     qty: qty
   })
   
-  axios.put(`http://localhost:3000/api/v1/inventories/${store}/${jan}`, payload, {
+  axios.put(`${req.protocol}://${req.get('host')}/api/v1/inventories/${store}/${jan}`, payload, {
     headers: {'content-type': 'application/json'},
   })
     .then(response => {
@@ -105,8 +106,9 @@ app.get('/static/js/stock-editor-pane-extension.js', (req, res, next) => {
   fs.readFile("templates/stock-editor-pane-extension.min.js", 'utf-8', (err, data) => {
     if (err) return res.status(503).send('Service Temporarily Unavailable')
     res.set('Content-Type', 'text/javascript')
-    res.send(data.replace(/<%\s*VAR_STORE_CODE\s*%>/g, store).replace(/<%\s*VAR_HOST\s*%>/g, req.get('host'))
-      .replace(/<%\s*VAR_SPINNER_IMAGE\s*%>/g, process.env.SPINNER_IMAGE))
+    res.send(data.replace(/<%\s*VAR_STORE_CODE\s*%>/g, store)
+      .replace(/<%\s*VAR_HOST\s*%>/g, req.get('host'))
+      .replace(/<%\s*VAR_PROTOCOL\s*%>/g, req.protocol))
   });
 })
 
