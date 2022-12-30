@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.1.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.2",
     "sync-glitch-cli": "^2.0.1",
     "uglify-js": "^3.9.1"
